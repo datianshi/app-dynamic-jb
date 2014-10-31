@@ -61,7 +61,7 @@ describe JavaBuildpack::Framework::AppDynamicsAgent do
 
         expect(java_opts).to include('-javaagent:$PWD/.java-buildpack/app_dynamics_agent/javaagent.jar')
         expect(java_opts).to include('-Dappdynamics.controller.hostName=test-host-name')
-        expect(java_opts).to include("-Dappdynamics.agent.applicationName='test-application-name'")
+        expect(java_opts).to include('-Dappdynamics.agent.applicationName=test-application-name')
         expect(java_opts).to include("-Dappdynamics.agent.tierName='test-tier-name'")
         expect(java_opts).to include('-Dappdynamics.agent.nodeName=$(expr "$VCAP_APPLICATION" : ' \
                                          '\'.*instance_id[": ]*"\([a-z0-9]\+\)".*\')')
@@ -98,12 +98,12 @@ describe JavaBuildpack::Framework::AppDynamicsAgent do
       end
 
       context do
-        let(:credentials) { super().merge 'account-access-key' => 'test-account-access-key' }
+        let(:environment) { super().merge 'APPDYNAMICS_NAME' => 'appdynamics-name' }
 
-        it 'should add account_access_key to JAVA_OPTS if specified' do
+        it 'should add application name to JAVA_OPTS from environment if specified' do
           component.release
 
-          expect(java_opts).to include('-Dappdynamics.agent.accountAccessKey=test-account-access-key')
+          expect(java_opts).to include('-Dappdynamics.agent.applicationName=appdynamics-name')
         end
       end
     end
